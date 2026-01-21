@@ -1,0 +1,9 @@
+@external tokens indentation from "./tokens.js" { indent, dedent, redent }
+
+@top Model { Name }
+
+Name { identifier }
+
+@tokens {
+    identifier { @asciiLetter (@asciiLetter | @digit | "-" | "_")*  }
+}

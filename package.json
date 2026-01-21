@@ -1,0 +1,16 @@
+{
+  "name": "automn-lezer2",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Joe Ennis",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx lezer-generator src/automn.grammar -o src/parser.js",
+    "test": "npm run build && node test.js"
+  },
+  "devDependencies": {
+    "@lezer/generator": "^1.8.0"
+  }
+}

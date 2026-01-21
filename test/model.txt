@@ -1,0 +1,7 @@
+# Empty model
+
+SomeModel
+
+==>
+
+Model(Name)
