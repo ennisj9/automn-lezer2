@@ -37,6 +37,7 @@ const advanceSpaces = (input) => {
 };
 
 export const indentation = new ExternalTokenizer((input, stack) => {
+  console.log(input.peek());
   if (input.peek() != newline && input.peek() != carriageReturn) return;
   let spaces = advanceSpaces();
   while (input.peek() == newline || input.peek() == carriageReturn)

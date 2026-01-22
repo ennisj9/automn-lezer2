@@ -4,4 +4,13 @@ SomeModel
 
 ==>
 
-Model(Name)
+root(Model(Name))
+
+# Model with field
+
+SomeModel
+  some_field
+
+==>
+
+root(Model(Name, Field(Name)))

@@ -1,9 +1,20 @@
-@external tokens indentation from "./tokens.js" { indent, dedent, redent }
+@top root { Model* }
 
-@top Model { Name }
+Model { Name indent modelChild (redent modelChild)* dedent?)}
+
+modelChild { Field }
+
+Field { Name }
 
 Name { identifier }
 
 @tokens {
     identifier { @asciiLetter (@asciiLetter | @digit | "-" | "_")*  }
+}
+
+@context trackIndent from "./tokens.js"
+@external tokens indentation from "./tokens.js" {
+  indent
+  dedent
+  redent
 }
