@@ -14,3 +14,33 @@ SomeModel
 ==>
 
 root(Model(Name, Field(Name)))
+
+# Multiple models with multiple fields
+
+SomeModel
+  first_field
+  second_field
+
+AnotherModel
+  another_field
+  last_field
+
+==>
+
+root(Model(Name, Field(Name),Field(Name)),Model(Name, Field(Name), Field(Name)))
+
+# Model with field indentation
+
+SomeModel
+    first_field
+        Blah
+    second_field
+        Blah
+
+==>
+
+root(Model(
+    Name,
+    Field(Name,FieldChild),
+    Field(Name,FieldChild)
+))

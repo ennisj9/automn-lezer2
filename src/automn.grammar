@@ -1,20 +1,52 @@
-@top root { Model* }
+@precedence { fieldRe @left, fieldDe @left, modelRe @left, modelDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left }
 
-Model { Name indent modelChild (redent modelChild)* dedent?)}
+@top root { Model (redent Model)* }
+
+modelBody { indent modelChild (!modelRe redent modelChild)* !modelDe dedent }
+Model { Name modelBody?  }
 
 modelChild { Field }
 
-Field { Name }
+fieldBody { indent FieldChild (!fieldRe redent FieldChild)* !fieldDe dedent }
+Field { Name typeSpec? fieldBody?  }
+
+typeSpec {  colon Type }
+Type { typeInner  }
+typeInner { !typeAtomic atomicType | !typeUnion UnionType | !arrayOf ArrayOfType }
+ArrayOfType { openBracket !type typeInner closeBracket }
+nonUnionType { atomicType | ArrayOfType }
+UnionType { nonUnionType (pipe nonUnionType)* }
+atomicType { !typeSymbol TypeSymbol | !typeEnumIdent typeEnumShorthand }
+TypeSymbol { identifier }
+typeEnumShorthand {  TypeEnumVariant comma TypeEnumVariant (comma TypeEnumVariant)* }
+TypeEnumVariant { identifier }
 
 Name { identifier }
+FieldChild { identifier }
+
+singleDocumentationLine { SingleDocumentationCaret SingleDocumentationString }
+
+SingleDocumentationString { documentationString }
+
+SingleDocumentationCaret { ">" }
+
+@skip { space }
 
 @tokens {
-    identifier { @asciiLetter (@asciiLetter | @digit | "-" | "_")*  }
+    identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
+    space { $[ \t]+ }
+    documentationString { $[^\n\r]+ }
+    colon { ":" }
+    comma { "," }
+    pipe { "|" }
+    openBracket { "[" }
+    closeBracket { "]" }
 }
+
 
 @context trackIndent from "./tokens.js"
 @external tokens indentation from "./tokens.js" {
-  indent
-  dedent
-  redent
+    indent
+    redent
+    dedent
 }

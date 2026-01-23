@@ -10,25 +10,26 @@ class IndentLevel {
   }
 }
 
+const newline = 10,
+  space = 32,
+  tab = 9,
+  carriageReturn = 13;
+
+let lastIndentDepth;
+
 export const trackIndent = new ContextTracker({
   start: new IndentLevel(null, 0),
   shift(context, term, stack, input) {
-    if (term == indent) return new IndentLevel(context, stack.pos - input.pos);
+    if (term == indent) return new IndentLevel(context, lastIndentDepth);
     if (term == dedent) return context.parent;
     return context;
   },
   hash: (context) => context.hash,
 });
 
-const newline = 10,
-  space = 32,
-  tab = 9,
-  carriageReturn = 13;
-
 const advanceSpaces = (input) => {
   let spaces = 0;
-  while (input.peek() == newline || input.peek() == carriageReturn)
-    input.advance();
+  while (input.next == newline || input.next == carriageReturn) input.advance();
   while (input.next == space || input.next == tab) {
     input.advance();
     spaces++;
@@ -36,18 +37,36 @@ const advanceSpaces = (input) => {
   return spaces;
 };
 
-export const indentation = new ExternalTokenizer((input, stack) => {
-  console.log(input.peek());
-  if (input.peek() != newline && input.peek() != carriageReturn) return;
-  let spaces = advanceSpaces();
-  while (input.peek() == newline || input.peek() == carriageReturn)
-    spaces = advanceSpaces();
+const spaceOrTab = (char) => char == space || char == tab;
+const newlineOrCarriage = (char) => char == newline || char == carriageReturn;
 
-  if (spaces > stack.context.depth) {
-    input.acceptToken(indent);
-  } else if (spaces < stack.context.depth) {
-    input.acceptToken(dedent);
-  } else {
-    input.acceptToken(redent);
-  }
-});
+export const indentation = new ExternalTokenizer(
+  (input, stack) => {
+    if (input.next == -1 && stack.context.parent) {
+      input.acceptToken(dedent);
+    }
+    if (input.next != newline && input.next != carriageReturn) return;
+    let i = 0;
+    let spaces = 0;
+    var char = input.peek(0);
+    while (spaceOrTab(char) || newlineOrCarriage(char)) {
+      spaces++;
+      if (char == newline) {
+        spaces = 0;
+      }
+      i++;
+      char = input.peek(i);
+    }
+    if (spaces > stack.context.depth) {
+      lastIndentDepth = spaces;
+      input.advance(i);
+      input.acceptToken(indent);
+    } else if (spaces < stack.context.depth) {
+      input.acceptToken(dedent);
+    } else {
+      input.advance(i);
+      input.acceptToken(redent);
+    }
+  },
+  { extend: true },
+);

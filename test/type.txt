@@ -1,0 +1,37 @@
+# Field with type
+
+SomeModel
+  field: int
+
+==>
+
+root(Model(Name, Field(Name, Type(TypeSymbol))))
+
+# Field with enum type
+
+SomeModel
+  field: BLUE, GREEN
+
+==>
+
+root(Model(Name, Field(Name, Type(TypeEnumVariant,TypeEnumVariant))))
+
+# Field with union type
+
+SomeModel
+  field: int | BLUE, GREEN
+
+==>
+
+root(Model(Name, Field(Name, Type(UnionType(TypeSymbol, TypeEnumVariant, TypeEnumVariant)))))
+
+# Field with complex type
+
+SomeModel
+  field: BLUE, GREEN | int | [string | date ]
+
+==>
+
+root(Model(Name, Field(Name,
+  Type(UnionType(TypeEnumVariant, TypeEnumVariant, TypeSymbol, ArrayOfType(UnionType(TypeSymbol,TypeSymbol))))
+)))

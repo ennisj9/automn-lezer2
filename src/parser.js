@@ -3,15 +3,15 @@ import {LRParser} from "@lezer/lr"
 import {indentation, trackIndent} from "./tokens.js"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "!WQQOPOOOOOQ'#C_'#C_OOOO'#Ca'#CaQQOPOOOVOQO'#C^OOOO-E6_-E6_OQOPO,58xOOOO'#C`'#C`OOOO1G.d1G.d",
-  stateData: "[~OYPO~OVUO~O",
-  goto: "kUPPVZbeTQORSSORRVURWUQRORTR",
-  nodeNames: "⚠ root Model Name Field",
-  maxTerm: 10,
+  states: "'zOVQPOOOOQQ'#C_'#C_O[QRO'#C^QgQROOOOQQ,58x,58xOVQPO'#CsOVQPO'#CkQgQROOOlQRO'#C`OzQRO,59_OOQQ,59V,59VOOQQ-E6i-E6iO!SQPO'#C}OOQQ,58z,58zO!XQPO,58zO!aQRO1G.yOVQPO'#CjOOQQ1G.y1G.yOOQQ'#Cf'#CfO!iQRO,59iO!qQRO'#CbO#VQPO'#CwOOQQ'#Cv'#CvO!XQPO'#CeO#[QRO'#CyO#mQRO'#CdOOQQ'#Cu'#CuOOQQ'#Ca'#CaO$OQRO1G.fOOQQ-E6h-E6hOOQQ7+$e7+$eOOQQ,59U,59UO!SQPO'#CiO$ZQRO1G/TOOQQ1G/T1G/TO$cQPO,59cO$hQPO,59PO!XQPO'#ChO$mQRO,59OOOQQ7+$Q7+$QOOQQ,59T,59TOOQQ-E6g-E6gOOQQ7+$o7+$oOOQQ'#Cc'#CcO%OQRO1G.}OOQQ1G.k1G.kOOQQ'#Cy'#CyOOQQ,59S,59SOOQQ-E6f-E6fO$cQPO'#CgO%dQRO7+$iOOQQ,59R,59ROOQQ-E6e-E6e",
+  stateData: "%x~OeOS~OfPO~OaTO`QXbQX~ObUO~Oa[Oh^ObSXcSX~Ob`OcaO~OfbO~OfdOngO~Ob`OcnO~ObpOcrO~OaUXbUXcUXlVXpUXoUX~OlsO~OaiXbiXciXpmXoiX~OpuOaWXbWXcWXoWX~Oa[ObSicSi~ObpOczO~Of{O~Oo}O~OpuOaWabWacWaoWa~Ol!ROakibkickipkioki~Ol!ROakqbkqckqpkqokq~O",
+  goto: "$TrPPsy!R!X![!a!l!p!w!}#T#Z#a#gPPPPPPP#mP#p!p![P#vPPP#}QRORYUSQOUTWT`QXTRo`Rl^Vf^guUe^guQ|sR!T!RTj^gSh^gR!OuQc[RxpQ!S|R!U!SQviR!QvQqcRyqQ_XRm_QVRRZVRSQQk^RtgSi^gR!PuQ]WRwl",
+  nodeNames: "⚠ root Model Name Field Type TypeSymbol TypeEnumVariant UnionType ArrayOfType FieldChild",
+  maxTerm: 33,
   context: trackIndent,
   skippedNodes: [0],
-  repeatNodeCount: 1,
-  tokenData: "m~RQ!c!}X#T#oX~^TY~}!OX!Q![X!c!}X#R#SX#T#oX",
+  repeatNodeCount: 5,
+  tokenData: "!x~RXXYnpqn|}y![!]!O!c!}!T!}#O!i#P#Q!n#T#o!T#p#q!s~sQe~XYnpqn~!OOl~~!TOh~~!YTf~}!O!T!Q![!T!c!}!T#R#S!T#T#o!T~!nOn~~!sOo~~!xOp~",
   tokenizers: [0, indentation],
   topRules: {"root":[0,1]},
   tokenPrec: 0
