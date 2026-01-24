@@ -1,0 +1,48 @@
+# Field with true Name
+
+SomeModel
+  true
+
+==>
+
+root(Model(Name, Field(Name)))
+
+# Field with label
+
+SomeModel
+  field: int 'Field label'
+
+==>
+
+root(Model(Name, Field(Name, Type(TypeSymbol), LabelString)))
+
+# Field example string escape
+
+SomeModel
+  field ~ "Blah \" blah"
+
+==>
+
+root(Model(Name, Field(Name, Value(ValueString(Escape)))))
+
+# Field with complex value
+
+SomeModel
+  field ~ { someKey: [1, {"foo":"bar"}]}
+
+==>
+
+root(Model(Name, Field(Name, Value(
+    Object(ObjectKeySymbol, Array(Number, Object(ObjectKeyString,ValueString)))
+))))
+
+# Field with object trailing comma
+
+SomeModel
+  field ~ { key: "value",}
+
+==>
+
+root(Model(Name, Field(Name, Value(
+    Object(ObjectKeySymbol, ValueString)
+))))

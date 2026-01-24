@@ -1,4 +1,4 @@
-@precedence { fieldRe @left, fieldDe @left, modelRe @left, modelDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left }
+@precedence { fieldRe @left, fieldDe @left, modelRe @left, modelDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left }
 
 @top root { Model (redent Model)* }
 
@@ -8,8 +8,9 @@ Model { Name modelBody?  }
 modelChild { Field }
 
 fieldBody { indent FieldChild (!fieldRe redent FieldChild)* !fieldDe dedent }
-Field { Name typeSpec? fieldBody?  }
+Field { Name typeSpec? LabelString? exampleSpec? fieldBody?  }
 
+exampleSpec { tilde Value }
 typeSpec {  colon Type }
 Type { typeInner  }
 typeInner { !typeAtomic atomicType | !typeUnion UnionType | !arrayOf ArrayOfType }
@@ -24,29 +25,69 @@ TypeEnumVariant { identifier }
 Name { identifier }
 FieldChild { identifier }
 
+Value { complexValue }
+
+AtomicValue { atomicValue }
+atomicValue { ValueString | TrueFalseNull | Number | Symbol }
+complexValue {  Array | Object | atomicValue }
+Object { '{' objectKeyValue (',' objectKeyValue)* ','? '}' }
+Array { '[' complexValue (',' complexValue)* ','? ']' }
+objectKeyValue { (ObjectKeyString | ObjectKeySymbol) ':' complexValue }
+ObjectKeyString { doubleQuoteString }
+ObjectKeySymbol { symbol }
+ValueString { doubleQuoteString }
+
+Symbol { symbol }
+TrueFalseNull { true | false | null }
+TemplateParameter {"<" }
+
+@skip {} {
+    LabelString { "'" (Escape | labelStringContent)* "'" }
+    doubleQuoteString { "\"" (Escape | valueStringContent)* "\"" }
+    TemplateString { "`" (Escape | templateStringContent)* "`" }
+    Escape { escape }
+}
+
+
+
 singleDocumentationLine { SingleDocumentationCaret SingleDocumentationString }
 
 SingleDocumentationString { documentationString }
 
 SingleDocumentationCaret { ">" }
 
-@skip { space }
+@skip { whitespace }
 
-@tokens {
-    identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
-    space { $[ \t]+ }
-    documentationString { $[^\n\r]+ }
-    colon { ":" }
-    comma { "," }
-    pipe { "|" }
-    openBracket { "[" }
-    closeBracket { "]" }
-}
-
-
-@context trackIndent from "./tokens.js"
 @external tokens indentation from "./tokens.js" {
     indent
     redent
     dedent
 }
+
+@tokens {
+    identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
+    whitespace { $[ \n\r\t] }
+    documentationString { $[^\n\r]+ }
+    labelStringContent{ !['\\]+ }
+    valueStringContent { !["\\]+ }
+    templateStringContent { ![`\\]+ }
+    colon { ":" }
+    comma { "," }
+    tilde { "~" }
+    pipe { "|" }
+    openBracket { "[" }
+    closeBracket { "]" }
+    hex { @digit | $[a-fA-F] }
+    escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
+    true { "true" }
+    false { "false" }
+    null { "null" }
+    symbol { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
+    @precedence { true, false, null, symbol }
+    int  { '0' | $[1-9] @digit* }
+    frac { '.' @digit+ }
+    Number { '-'? int frac? }
+}
+
+
+@context trackIndent from "./tokens.js"
