@@ -1,0 +1,17 @@
+# Empty Enum
+
+|Color
+
+==>
+
+root(Enum(EnumPipe, EnumName))
+
+# Enum with variants
+
+|Color
+  BLUE
+  GREEN
+
+==>
+
+root(Enum(EnumPipe, EnumName, Variant(VariantName), Variant(VariantName)))

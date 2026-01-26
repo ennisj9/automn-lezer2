@@ -1,20 +1,35 @@
 @precedence { fieldRe @left, fieldDe @left, modelRe @left, modelDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left }
 
-@top root { Model (redent Model)* }
+@top root { entity (redent entity)* }
+
+entity { Model | Enum }
 
 modelBody { indent modelChild (!modelRe redent modelChild)* !modelDe dedent }
 ModelName { identifier }
 Model { ModelName modelBody?  }
 
 
-modelChild { Field }
+modelChild { Field | describer }
 
 FieldName { identifier }
 Field { FieldName typeSpec? LabelString? exampleSpec? fieldBody?  }
 fieldBody { indent fieldChild (!fieldRe redent fieldChild)* !fieldDe dedent }
-fieldChild { singleDocumentationLine | multilineDocumentation }
+fieldChild { describer }
 
+EnumName { identifier }
+EnumPipe { pipe }
+Enum { EnumPipe EnumName typeSpec? enumBody? }
+enumBody { indent enumChild (redent enumChild)* dedent }
+enumChild { Variant | describer }
 
+VariantName { identifier }
+Variant { VariantName }
+
+describer { singleDocumentationLine | multilineDocumentation | property | tags}
+PropertyKey { identifier }
+property { Period PropertyKey "=" Value }
+Tag { identifier }
+tags { OpenBracket Tag (comma Tag)* comma? CloseBracket }
 
 exampleSpec { tilde Value }
 typeSpec {  colon Type }
@@ -55,7 +70,7 @@ singleDocumentationLine { SingleDocumentationCaret DocumentationString }
     DocumentationString { documentationString }
 }
 
-SingleDocumentationCaret { SingleCaret }
+SingleDocumentationCaret { singleCaret }
 
 @skip { whitespace }
 
@@ -76,10 +91,11 @@ SingleDocumentationCaret { SingleCaret }
     comma { "," }
     tilde { "~" }
     pipe { "|" }
+    Period { "." }
     OpenBracket { "[" }
     CloseBracket { "]" }
     DoubleCaret { ">>" }
-    SingleCaret { ">" }
+    singleCaret { ">" }
     hex { @digit | $[a-fA-F] }
     Escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
     true { "true" }

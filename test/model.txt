@@ -44,3 +44,33 @@ root(Model(
     Field(FieldName,SingleDocumentationCaret, DocumentationString),
     Field(FieldName,SingleDocumentationCaret, DocumentationString)
 ))
+
+# Model with property
+
+SomeModel
+  .version = 1.2
+  field_name
+
+==>
+
+root(Model(
+    ModelName,
+    Period,PropertyKey,Value(Number)
+    Field(FieldName)
+))
+
+# Model with tags and property
+
+SomeModel
+  [private, readonly]
+  .version = 1.2
+  field_name
+
+==>
+
+root(Model(
+    ModelName,
+    OpenBracket, Tag, Tag, CloseBracket,
+    Period,PropertyKey,Value(Number)
+    Field(FieldName)
+))
