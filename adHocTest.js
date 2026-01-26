@@ -1,7 +1,11 @@
 import { parser } from "./src/parser.js";
 
 const input = `SomeModel
-  true`;
+  field
+    >>
+      something here
+      and here
+`;
 
 console.log("Input length:", input.length);
 console.log("Character at pos 13:", JSON.stringify(input[9]));

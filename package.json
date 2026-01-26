@@ -8,9 +8,26 @@
   "main": "index.js",
   "scripts": {
     "build": "npx lezer-generator src/automn.grammar -o src/parser.js",
-    "test": "npm run build && node test.js"
+    "test": "npm run build && node test.js",
+    "out": "npm run build && node gram.js",
+    "playground": "npm run build && vite playground"
   },
   "devDependencies": {
-    "@lezer/generator": "^1.8.0"
+    "@babel/runtime": "^7.28.6",
+    "@codemirror/basic-setup": "^0.20.0",
+    "@codemirror/lang-javascript": "^6.2.4",
+    "@codemirror/language": "^6.12.1",
+    "@codemirror/state": "^6.5.4",
+    "@codemirror/text": "^0.19.6",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.39.11",
+    "@lezer/common": "^1.5.0",
+    "@lezer/generator": "^1.8.0",
+    "@uiw/codemirror-theme-github": "^4.25.4",
+    "codemirror": "^6.0.2",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "@lezer/highlight": "^1.2.3"
   }
 }

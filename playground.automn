@@ -1,0 +1,2 @@
+SomeModel
+  field ~ { someKey: [1, {"foo":"bar"}]}

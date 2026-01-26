@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Automn Grammar Playground</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                padding: 20px;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                background: #282c34;
+                color: #abb2bf;
+                min-height: 100vh;
+            }
+            h1 {
+                margin: 0 0 20px 0;
+                font-size: 1.5rem;
+                color: #61afef;
+            }
+            #editor {
+                border: 1px solid #3e4451;
+                border-radius: 4px;
+                overflow: hidden;
+                background-color: #0d1117;
+            }
+            .cm-editor {
+                height: calc(100vh - 100px);
+                font-size: 14px;
+            }
+            .cm-scroller {
+                overflow: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Automn Grammar Playground</h1>
+        <div id="editor"></div>
+        <script type="module" src="./main.js"></script>
+    </body>
+</html>

@@ -4,7 +4,7 @@ SomeModel
 
 ==>
 
-root(Model(Name))
+root(Model(ModelName))
 
 # Model with field
 
@@ -13,7 +13,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name)))
+root(Model(ModelName, Field(FieldName)))
 
 # Multiple models with multiple fields
 
@@ -27,20 +27,20 @@ AnotherModel
 
 ==>
 
-root(Model(Name, Field(Name),Field(Name)),Model(Name, Field(Name), Field(Name)))
+root(Model(ModelName, Field(FieldName),Field(FieldName)),Model(ModelName, Field(FieldName), Field(FieldName)))
 
 # Model with field indentation
 
 SomeModel
     first_field
-        Blah
+        > blah
     second_field
-        Blah
+        > blah
 
 ==>
 
 root(Model(
-    Name,
-    Field(Name,FieldChild),
-    Field(Name,FieldChild)
+    ModelName,
+    Field(FieldName,SingleDocumentationCaret, DocumentationString),
+    Field(FieldName,SingleDocumentationCaret, DocumentationString)
 ))

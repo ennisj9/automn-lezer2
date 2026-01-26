@@ -5,7 +5,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name)))
+root(Model(ModelName, Field(FieldName)))
 
 # Field with label
 
@@ -14,7 +14,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Type(TypeSymbol), LabelString)))
+root(Model(ModelName, Field(FieldName, Type(TypeSymbol), LabelString)))
 
 # Field example string escape
 
@@ -23,7 +23,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Value(ValueString(Escape)))))
+root(Model(ModelName, Field(FieldName, Value(ValueString(Escape)))))
 
 # Field with complex value
 
@@ -32,7 +32,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Value(
+root(Model(ModelName, Field(FieldName, Value(
     Object(ObjectKeySymbol, Array(Number, Object(ObjectKeyString,ValueString)))
 ))))
 
@@ -43,6 +43,37 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Value(
+root(Model(ModelName, Field(FieldName, Value(
     Object(ObjectKeySymbol, ValueString)
 ))))
+
+# Field with documentation line
+
+SomeModel
+  field
+    > blah blah
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    SingleDocumentationCaret,
+    DocumentationString
+)))
+
+# Field with mulitline documentation
+
+SomeModel
+  field
+    >>
+      something here
+      and here
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    DoubleDocumentationCaret,
+    DocumentationString,
+    DocumentationString
+)))

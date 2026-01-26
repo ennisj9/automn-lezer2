@@ -3,18 +3,24 @@
 @top root { Model (redent Model)* }
 
 modelBody { indent modelChild (!modelRe redent modelChild)* !modelDe dedent }
-Model { Name modelBody?  }
+ModelName { identifier }
+Model { ModelName modelBody?  }
+
 
 modelChild { Field }
 
-fieldBody { indent FieldChild (!fieldRe redent FieldChild)* !fieldDe dedent }
-Field { Name typeSpec? LabelString? exampleSpec? fieldBody?  }
+FieldName { identifier }
+Field { FieldName typeSpec? LabelString? exampleSpec? fieldBody?  }
+fieldBody { indent fieldChild (!fieldRe redent fieldChild)* !fieldDe dedent }
+fieldChild { singleDocumentationLine | multilineDocumentation }
+
+
 
 exampleSpec { tilde Value }
 typeSpec {  colon Type }
 Type { typeInner  }
 typeInner { !typeAtomic atomicType | !typeUnion UnionType | !arrayOf ArrayOfType }
-ArrayOfType { openBracket !type typeInner closeBracket }
+ArrayOfType { OpenBracket !type typeInner CloseBracket }
 nonUnionType { atomicType | ArrayOfType }
 UnionType { nonUnionType (pipe nonUnionType)* }
 atomicType { !typeSymbol TypeSymbol | !typeEnumIdent typeEnumShorthand }
@@ -22,13 +28,11 @@ TypeSymbol { identifier }
 typeEnumShorthand {  TypeEnumVariant comma TypeEnumVariant (comma TypeEnumVariant)* }
 TypeEnumVariant { identifier }
 
-Name { identifier }
-FieldChild { identifier }
+
 
 Value { complexValue }
-
 AtomicValue { atomicValue }
-atomicValue { ValueString | TrueFalseNull | Number | Symbol }
+atomicValue { ValueString | Bool | Null | Number | Symbol }
 complexValue {  Array | Object | atomicValue }
 Object { '{' objectKeyValue (',' objectKeyValue)* ','? '}' }
 Array { '[' complexValue (',' complexValue)* ','? ']' }
@@ -38,23 +42,20 @@ ObjectKeySymbol { symbol }
 ValueString { doubleQuoteString }
 
 Symbol { symbol }
-TrueFalseNull { true | false | null }
+Bool { true | false  }
 TemplateParameter {"<" }
+
+multilineDocumentation { DoubleCaret indent DocumentationString (redent DocumentationString)* dedent }
+singleDocumentationLine { SingleDocumentationCaret DocumentationString }
 
 @skip {} {
     LabelString { "'" (Escape | labelStringContent)* "'" }
     doubleQuoteString { "\"" (Escape | valueStringContent)* "\"" }
     TemplateString { "`" (Escape | templateStringContent)* "`" }
-    Escape { escape }
+    DocumentationString { documentationString }
 }
 
-
-
-singleDocumentationLine { SingleDocumentationCaret SingleDocumentationString }
-
-SingleDocumentationString { documentationString }
-
-SingleDocumentationCaret { ">" }
+SingleDocumentationCaret { SingleCaret }
 
 @skip { whitespace }
 
@@ -67,7 +68,7 @@ SingleDocumentationCaret { ">" }
 @tokens {
     identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
     whitespace { $[ \n\r\t] }
-    documentationString { $[^\n\r]+ }
+    documentationString { ![^\n\r]+ }
     labelStringContent{ !['\\]+ }
     valueStringContent { !["\\]+ }
     templateStringContent { ![`\\]+ }
@@ -75,15 +76,18 @@ SingleDocumentationCaret { ">" }
     comma { "," }
     tilde { "~" }
     pipe { "|" }
-    openBracket { "[" }
-    closeBracket { "]" }
+    OpenBracket { "[" }
+    CloseBracket { "]" }
+    DoubleCaret { ">>" }
+    SingleCaret { ">" }
     hex { @digit | $[a-fA-F] }
-    escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
+    Escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
     true { "true" }
     false { "false" }
-    null { "null" }
+    Null { "null" }
     symbol { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
-    @precedence { true, false, null, symbol }
+    @precedence { true, false, Null, symbol }
+    @precedence { indent, redent, dedent, documentationString, whitespace }
     int  { '0' | $[1-9] @digit* }
     frac { '.' @digit+ }
     Number { '-'? int frac? }
@@ -91,3 +95,5 @@ SingleDocumentationCaret { ">" }
 
 
 @context trackIndent from "./tokens.js"
+
+@external propSource automnHighlighting from "./highlight.js"

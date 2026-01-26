@@ -5,7 +5,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Type(TypeSymbol))))
+root(Model(ModelName, Field(FieldName, Type(TypeSymbol))))
 
 # Field with enum type
 
@@ -14,7 +14,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Type(TypeEnumVariant,TypeEnumVariant))))
+root(Model(ModelName, Field(FieldName, Type(TypeEnumVariant,TypeEnumVariant))))
 
 # Field with union type
 
@@ -23,7 +23,7 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name, Type(UnionType(TypeSymbol, TypeEnumVariant, TypeEnumVariant)))))
+root(Model(ModelName, Field(FieldName, Type(UnionType(TypeSymbol, TypeEnumVariant, TypeEnumVariant)))))
 
 # Field with complex type
 
@@ -32,6 +32,6 @@ SomeModel
 
 ==>
 
-root(Model(Name, Field(Name,
+root(Model(ModelName, Field(FieldName,
   Type(UnionType(TypeEnumVariant, TypeEnumVariant, TypeSymbol, ArrayOfType(UnionType(TypeSymbol,TypeSymbol))))
 )))
