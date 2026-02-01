@@ -1,64 +1,97 @@
-@precedence { fieldRe @left, fieldDe @left, modelRe @left, modelDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left }
+@precedence { childRe @left, childDe @left, parentRe @left, parentDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left, ident @left, symbol @left }
 
 @top root { entity (redent entity)* }
 
-entity { Model | Enum }
+entity { Model | Enum | TypeAlias | Function }
 
-modelBody { indent modelChild (!modelRe redent modelChild)* !modelDe dedent }
+modelBody {indent modelChild (!parentRe redent (!ident modelChild))* !parentDe dedent }
 ModelName { identifier }
-Model { ModelName modelBody?  }
-
+Model { ModelName ((!symbol atomicValue) | mixin)* modelBody? }
+mixin { "&" TypeSymbol }
 
 modelChild { Field | describer }
 
-FieldName { identifier }
+FieldName { !ident identifier }
 Field { FieldName typeSpec? LabelString? exampleSpec? fieldBody?  }
-fieldBody { indent fieldChild (!fieldRe redent fieldChild)* !fieldDe dedent }
-fieldChild { describer }
+fieldBody { indent fieldChild (!childRe redent fieldChild)* !childDe dedent }
+fieldChild { describer | typeSpec | contextualTypeSpec | LabelString | exampleSpec }
 
 EnumName { identifier }
 EnumPipe { pipe }
 Enum { EnumPipe EnumName typeSpec? enumBody? }
-enumBody { indent enumChild (redent enumChild)* dedent }
-enumChild { Variant | describer }
+enumBody { indent enumChild (!parentRe redent enumChild)* !parentDe dedent }
+enumChild { Variant | describer | typeSpec }
 
 VariantName { identifier }
-Variant { VariantName }
+Variant { VariantName (payloadSpec | equalSpec)? variantBody? }
+variantBody { indent variantChild (!childRe redent variantChild)* !childDe dedent }
+variantChild { describer | equalSpec }
+payloadSpec { ParenOpen nonEnumType (comma nonEnumType)* comma? ParenClose }
+equalSpec { Equal atomicValue }
+
+FunctionName { identifier "()" }
+Function { FunctionName functionBody? }
+functionBody { indent functionChild (!parentRe redent (!ident functionChild))* !parentDe dedent }
+functionChild { Field | returnField | describer }
+returnField { RightArrow Field }
 
 describer { singleDocumentationLine | multilineDocumentation | property | tags}
 PropertyKey { identifier }
-property { Period PropertyKey "=" Value }
+property { Period PropertyKey Equal value }
 Tag { identifier }
-tags { OpenBracket Tag (comma Tag)* comma? CloseBracket }
+tags { bracketOpen Tag (comma Tag)* comma? bracketClose }
 
-exampleSpec { tilde Value }
+exampleSpec { Tilde value }
 typeSpec {  colon Type }
 Type { typeInner  }
-typeInner { !typeAtomic atomicType | !typeUnion UnionType | !arrayOf ArrayOfType }
-ArrayOfType { OpenBracket !type typeInner CloseBracket }
-nonUnionType { atomicType | ArrayOfType }
-UnionType { nonUnionType (pipe nonUnionType)* }
+typeInner { !typeAtomic atomicType | !typeUnion unionType | !arrayOf arrayOfType | mapType }
+mapType { TypeCurlyOpen atomicType colon typeInner TypeCurlyClose }
+arrayOfType { TypeBracketOpen !type typeInner TypeBracketClose }
+nonUnionType { atomicType | arrayOfType }
+unionType { nonUnionType (TypePipe nonUnionType)* }
 atomicType { !typeSymbol TypeSymbol | !typeEnumIdent typeEnumShorthand }
+TypeContext { identifier }
+contextualTypeSpec { ParenOpen TypeContext ParenClose typeSpec }
+TypePipe { pipe }
+TypeBracketOpen { bracketOpen }
+TypeBracketClose { bracketClose }
+TypeCurlyOpen { curlyOpen }
+TypeCurlyClose { curlyClose }
+
+
+nonEnumType { !typeAtomic TypeSymbol | !typeUnion nonEnumUnionType | !arrayOf nonEnumArrayOfType }
+nonEnumArrayOfType { TypeBracketOpen !type nonEnumType TypeBracketClose }
+nonEnumNonUnionType { TypeSymbol | nonEnumArrayOfType }
+nonEnumUnionType { nonEnumNonUnionType (TypePipe nonEnumNonUnionType)* }
+
 TypeSymbol { identifier }
 typeEnumShorthand {  TypeEnumVariant comma TypeEnumVariant (comma TypeEnumVariant)* }
 TypeEnumVariant { identifier }
 
+TypeAlias { colon TypeAliasName Equal Type typeAliasBody? }
+TypeAliasName { identifier }
+typeAliasBody { indent describer (redent describer)* dedent }
 
-
-Value { complexValue }
-AtomicValue { atomicValue }
-atomicValue { ValueString | Bool | Null | Number | Symbol }
+value { complexValue }
+atomicValue { ValueString | Bool | Null | Number | Symbol | Template }
 complexValue {  Array | Object | atomicValue }
-Object { '{' objectKeyValue (',' objectKeyValue)* ','? '}' }
-Array { '[' complexValue (',' complexValue)* ','? ']' }
+@skip { whitespace } {
+    Object { curlyOpen objectKeyValue (',' objectKeyValue)* ','? curlyClose }
+    Array { bracketOpen complexValue (',' complexValue)* ','? bracketClose }
+}
 objectKeyValue { (ObjectKeyString | ObjectKeySymbol) ':' complexValue }
 ObjectKeyString { doubleQuoteString }
-ObjectKeySymbol { symbol }
+ObjectKeySymbol { identifier }
 ValueString { doubleQuoteString }
 
-Symbol { symbol }
+Symbol { identifier }
 Bool { true | false  }
-TemplateParameter {"<" }
+true { @extend<identifier, "true"> }
+false { @extend<identifier, "false"> }
+Null { @extend<identifier, "null"> }
+
+TemplateField { identifier }
+templateParameter {AngleOpen TemplateField typeSpec? (Tilde ValueString)? AngleClose }
 
 multilineDocumentation { DoubleCaret indent DocumentationString (redent DocumentationString)* dedent }
 singleDocumentationLine { SingleDocumentationCaret DocumentationString }
@@ -66,13 +99,12 @@ singleDocumentationLine { SingleDocumentationCaret DocumentationString }
 @skip {} {
     LabelString { "'" (Escape | labelStringContent)* "'" }
     doubleQuoteString { "\"" (Escape | valueStringContent)* "\"" }
-    TemplateString { "`" (Escape | templateStringContent)* "`" }
+    Template { Backtick (Backtick | ((templateStringContent | templateParameter | Escape)+ Backtick)) }
     DocumentationString { documentationString }
 }
 
 SingleDocumentationCaret { singleCaret }
 
-@skip { whitespace }
 
 @external tokens indentation from "./tokens.js" {
     indent
@@ -80,33 +112,43 @@ SingleDocumentationCaret { singleCaret }
     dedent
 }
 
+
+@skip { spaces }
+
+AngleClose { singleCaret }
+
 @tokens {
     identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
+    spaces { $[ \t] }
     whitespace { $[ \n\r\t] }
     documentationString { ![^\n\r]+ }
     labelStringContent{ !['\\]+ }
     valueStringContent { !["\\]+ }
-    templateStringContent { ![`\\]+ }
+    templateStringContent { ![`\\<]+ }
     colon { ":" }
     comma { "," }
-    tilde { "~" }
+    Tilde { "~" }
+    Backtick { "`" }
     pipe { "|" }
     Period { "." }
-    OpenBracket { "[" }
-    CloseBracket { "]" }
+    bracketOpen { "[" }
+    bracketClose { "]" }
     DoubleCaret { ">>" }
+    AngleOpen { "<" }
     singleCaret { ">" }
+    ParenOpen { "(" }
+    ParenClose { ")" }
+    curlyOpen { "{" }
+    curlyClose { "}" }
+    Equal { "=" }
+    RightArrow { "->" }
     hex { @digit | $[a-fA-F] }
     Escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
-    true { "true" }
-    false { "false" }
-    Null { "null" }
-    symbol { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
-    @precedence { true, false, Null, symbol }
-    @precedence { indent, redent, dedent, documentationString, whitespace }
+    @precedence { documentationString, spaces }
     int  { '0' | $[1-9] @digit* }
     frac { '.' @digit+ }
-    Number { '-'? int frac? }
+    Number { '-'? int frac? exp? }
+    exp  { $[eE] $[+\-]? @digit+ }
 }
 
 

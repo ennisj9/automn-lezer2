@@ -1,4 +1,4 @@
-# Field with type
+# Type - Field with type
 
 SomeModel
   field: int
@@ -7,7 +7,7 @@ SomeModel
 
 root(Model(ModelName, Field(FieldName, Type(TypeSymbol))))
 
-# Field with enum type
+# Type - Field with enum type
 
 SomeModel
   field: BLUE, GREEN
@@ -16,16 +16,16 @@ SomeModel
 
 root(Model(ModelName, Field(FieldName, Type(TypeEnumVariant,TypeEnumVariant))))
 
-# Field with union type
+# Type - Field with union type
 
 SomeModel
   field: int | BLUE, GREEN
 
 ==>
 
-root(Model(ModelName, Field(FieldName, Type(UnionType(TypeSymbol, TypeEnumVariant, TypeEnumVariant)))))
+root(Model(ModelName, Field(FieldName, Type(TypeSymbol, TypePipe, TypeEnumVariant, TypeEnumVariant))))
 
-# Field with complex type
+# Type - Field with complex type
 
 SomeModel
   field: BLUE, GREEN | int | [string | date ]
@@ -33,5 +33,29 @@ SomeModel
 ==>
 
 root(Model(ModelName, Field(FieldName,
-  Type(UnionType(TypeEnumVariant, TypeEnumVariant, TypeSymbol, ArrayOfType(OpenBracket, UnionType(TypeSymbol,TypeSymbol), CloseBracket)))
+  Type(TypeEnumVariant, TypeEnumVariant, TypePipe, TypeSymbol, TypePipe, TypeBracketOpen, TypeSymbol, TypePipe, TypeSymbol, TypeBracketClose)
 )))
+
+# Type - Field with contextual types
+
+SomeModel
+  field: date
+    (js): string
+    (db): int
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    Type(TypeSymbol),
+    ParenOpen, TypeContext, ParenClose, Type(TypeSymbol),
+    ParenOpen, TypeContext, ParenClose, Type(TypeSymbol)
+)))
+
+# Type alias
+
+:Mytype = int | string
+
+==>
+
+root(TypeAlias(TypeAliasName, Equal, Type(TypeSymbol, TypePipe, TypeSymbol)))

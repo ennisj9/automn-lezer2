@@ -15,3 +15,78 @@ root(Enum(EnumPipe, EnumName))
 ==>
 
 root(Enum(EnumPipe, EnumName, Variant(VariantName), Variant(VariantName)))
+
+# Enum with describers
+
+|Color
+  : int
+  [tag]
+  .version = 1
+  > single doc
+  >>
+    multiline doc
+  BLUE
+  GREEN
+
+==>
+
+root(Enum(
+    EnumPipe,
+    EnumName,
+    Type(TypeSymbol),
+    Tag,
+    Period, PropertyKey, Equal, Number,
+    SingleDocumentationCaret, DocumentationString,
+    DoubleCaret,
+    DocumentationString,
+    Variant(VariantName),
+    Variant(VariantName)
+))
+
+# Enum variants with payloads
+
+|MaybeBoolInt
+  Some(bool, int)
+  None
+
+==>
+
+root(Enum(EnumPipe, EnumName,
+  Variant(VariantName,ParenOpen,TypeSymbol, TypeSymbol,ParenClose),
+  Variant(VariantName)
+))
+
+# Enum variants with values
+
+|Gender
+  MALE = "M"
+  FEMALE = "F"
+  OTHER = "O"
+
+==>
+
+root(Enum(EnumPipe, EnumName,
+  Variant(VariantName,Equal,ValueString),
+  Variant(VariantName,Equal,ValueString),
+  Variant(VariantName,Equal,ValueString),
+))
+
+# Enum with variant describers
+
+|Color
+  BLUE
+    = "BLUE"
+    [tag]
+    .version = 1
+    > single doc
+    >>
+      multiline doc
+  GREEN
+
+==>
+
+root(Enum(
+    EnumPipe,
+    EnumName,
+    Variant(VariantName,Equal,ValueString,Tag,Period, PropertyKey, Equal, Number, SingleDocumentationCaret, DocumentationString, DoubleCaret, DocumentationString), Variant(VariantName)
+))

@@ -23,7 +23,16 @@ SomeModel
 
 ==>
 
-root(Model(ModelName, Field(FieldName, Value(ValueString(Escape)))))
+root(Model(ModelName, Field(FieldName, Tilde, ValueString(Escape))))
+
+# Field with true example
+
+SomeModel
+  field ~ true
+
+==>
+
+root(Model(ModelName, Field(FieldName, Tilde, Bool)))
 
 # Field with complex value
 
@@ -32,9 +41,9 @@ SomeModel
 
 ==>
 
-root(Model(ModelName, Field(FieldName, Value(
+root(Model(ModelName, Field(FieldName, Tilde,
     Object(ObjectKeySymbol, Array(Number, Object(ObjectKeyString,ValueString)))
-))))
+)))
 
 # Field with object trailing comma
 
@@ -43,9 +52,9 @@ SomeModel
 
 ==>
 
-root(Model(ModelName, Field(FieldName, Value(
+root(Model(ModelName, Field(FieldName, Tilde,
     Object(ObjectKeySymbol, ValueString)
-))))
+)))
 
 # Field with documentation line
 
@@ -76,4 +85,57 @@ root(Model(ModelName, Field(
     DoubleCaret,
     DocumentationString,
     DocumentationString
+)))
+
+# Field with child label
+
+SomeModel
+  field
+    'Field'
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    LabelString
+)))
+
+# Field with child type spec
+
+SomeModel
+  field
+    :int
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    Type(TypeSymbol)
+)))
+
+# Field with child example
+
+SomeModel
+  field
+    ~ "string"
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    Tilde,
+    ValueString
+)))
+
+# Field with template
+
+SomeModel
+  field ~ `some\nFolder/<file: str ~ "file">`
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    Tilde,
+    Template(Backtick, Escape, AngleOpen, TemplateField, Type(TypeSymbol), Tilde, ValueString, AngleClose, Backtick)
 )))

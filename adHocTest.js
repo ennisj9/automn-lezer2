@@ -1,11 +1,6 @@
 import { parser } from "./src/parser.js";
 
-const input = `SomeModel
-  field
-    >>
-      something here
-      and here
-`;
+const input = `:TypeAlias = int | [string]`;
 
 console.log("Input length:", input.length);
 console.log("Character at pos 13:", JSON.stringify(input[9]));

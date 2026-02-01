@@ -1,0 +1,19 @@
+# Empty Function
+
+doSomething()
+
+==>
+
+root(Function(FunctionName))
+
+# Function with field and return
+
+doSomething()
+  arg: int
+  -> ret: int
+
+==>
+
+root(Function(
+    FunctionName, Field(FieldName, Type(TypeSymbol)), RightArrow, Field(FieldName, Type(TypeSymbol))
+))

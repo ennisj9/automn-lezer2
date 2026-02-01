@@ -1,0 +1,59 @@
+.background {
+    color: #2d303b;
+}
+.model-name {
+    color: #fff5e0;
+    font-weight: bold;
+}
+.function {
+    color: #8be0ff;
+}
+.field-name {
+    color: #ffffff;
+}
+.type {
+    color: #8be8ff;
+}
+.type-operator {
+    color: #70bdfd;
+}
+.number {
+    color: #ffa2a3;
+}
+.symbol {
+    color: #c5e39c;
+}
+.string {
+    color: #fff5e0;
+}
+.escape {
+    color: #f5d591;
+}
+.template-string {
+    color: #f6b68e;
+}
+.label {
+    color: #c9b2ff;
+}
+.property {
+    color: #ffc3fe;
+}
+.tag {
+    color: #f58cde;
+}
+.meta-punctuation {
+    color: #f3a3f0;
+}
+.enum-name {
+    color: #bff9d5;
+    font-weight: bold;
+}
+.variant {
+    color: #bff9d5;
+}
+.documentation {
+    color: #d1d9ff;
+}
+.true-false-null {
+    color: #70adfd;
+}

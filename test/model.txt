@@ -55,7 +55,7 @@ SomeModel
 
 root(Model(
     ModelName,
-    Period,PropertyKey,Value(Number)
+    Period,PropertyKey, Equal, Number
     Field(FieldName)
 ))
 
@@ -70,7 +70,20 @@ SomeModel
 
 root(Model(
     ModelName,
-    OpenBracket, Tag, Tag, CloseBracket,
-    Period,PropertyKey,Value(Number)
+    Tag, Tag,
+    Period, PropertyKey, Equal, Number,
+    Field(FieldName)
+))
+
+# Model shorthands
+
+SomeModel GET `user/`
+  field
+
+==>
+
+root(Model(
+    ModelName,
+    Symbol, Template(Backtick, Backtick),
     Field(FieldName)
 ))

@@ -24,18 +24,8 @@ export const trackIndent = new ContextTracker({
     if (term == dedent) return context.parent;
     return context;
   },
-  hash: (context) => context.hash,
+  hash: (context) => (context ? context.hash : 0),
 });
-
-const advanceSpaces = (input) => {
-  let spaces = 0;
-  while (input.next == newline || input.next == carriageReturn) input.advance();
-  while (input.next == space || input.next == tab) {
-    input.advance();
-    spaces++;
-  }
-  return spaces;
-};
 
 const spaceOrTab = (char) => char == space || char == tab;
 const newlineOrCarriage = (char) => char == newline || char == carriageReturn;
