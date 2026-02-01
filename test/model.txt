@@ -70,7 +70,7 @@ SomeModel
 
 root(Model(
     ModelName,
-    Tag, Tag,
+    BracketOpen, Tag, Tag, BracketClose
     Period, PropertyKey, Equal, Number,
     Field(FieldName)
 ))

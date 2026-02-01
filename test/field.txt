@@ -7,6 +7,15 @@ SomeModel
 
 root(Model(ModelName, Field(FieldName)))
 
+# Field with optional
+
+SomeModel
+  field?
+
+==>
+
+root(Model(ModelName, Field(FieldName, QuestionMark)))
+
 # Field with label
 
 SomeModel
@@ -34,6 +43,15 @@ SomeModel
 
 root(Model(ModelName, Field(FieldName, Tilde, Bool)))
 
+# Field with constant value
+
+SomeModel
+  success == true
+
+==>
+
+root(Model(ModelName, Field(FieldName, DoubleEqual, Bool)))
+
 # Field with complex value
 
 SomeModel
@@ -42,7 +60,7 @@ SomeModel
 ==>
 
 root(Model(ModelName, Field(FieldName, Tilde,
-    Object(ObjectKeySymbol, Array(Number, Object(ObjectKeyString,ValueString)))
+    Object(CurlyOpen, ObjectKeySymbol, Array(BracketOpen, Number, Object(CurlyOpen, ObjectKeyString,ValueString, CurlyClose), BracketClose), CurlyClose)
 )))
 
 # Field with object trailing comma
@@ -53,7 +71,7 @@ SomeModel
 ==>
 
 root(Model(ModelName, Field(FieldName, Tilde,
-    Object(ObjectKeySymbol, ValueString)
+    Object(CurlyOpen, ObjectKeySymbol, ValueString, CurlyClose)
 )))
 
 # Field with documentation line
@@ -138,4 +156,17 @@ root(Model(ModelName, Field(
     FieldName,
     Tilde,
     Template(Backtick, Escape, AngleOpen, TemplateField, Type(TypeSymbol), Tilde, ValueString, AngleClose, Backtick)
+)))
+
+# Field with true false null ValueString
+
+SomeModel
+  field ~ {true: true, false: false, null: null}
+
+==>
+
+root(Model(ModelName, Field(
+    FieldName,
+    Tilde,
+    Object(CurlyOpen, ObjectKeySymbol, Bool, ObjectKeySymbol, Bool, ObjectKeySymbol, Null, CurlyClose)
 )))

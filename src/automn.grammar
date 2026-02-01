@@ -9,16 +9,16 @@ ModelName { identifier }
 Model { ModelName ((!symbol atomicValue) | mixin)* modelBody? }
 mixin { "&" TypeSymbol }
 
-modelChild { Field | describer }
+modelChild { Field | Function | describer }
 
-FieldName { !ident identifier }
-Field { FieldName typeSpec? LabelString? exampleSpec? fieldBody?  }
+FieldName { !ident (identifier | true | false| null)  }
+Field { FieldName QuestionMark? typeSpec? LabelString? (exampleSpec | constantSpec)? fieldBody?  }
+constantSpec { DoubleEqual value }
 fieldBody { indent fieldChild (!childRe redent fieldChild)* !childDe dedent }
 fieldChild { describer | typeSpec | contextualTypeSpec | LabelString | exampleSpec }
 
 EnumName { identifier }
-EnumPipe { pipe }
-Enum { EnumPipe EnumName typeSpec? enumBody? }
+Enum { pipe EnumName typeSpec? enumBody? }
 enumBody { indent enumChild (!parentRe redent enumChild)* !parentDe dedent }
 enumChild { Variant | describer | typeSpec }
 
@@ -27,7 +27,8 @@ Variant { VariantName (payloadSpec | equalSpec)? variantBody? }
 variantBody { indent variantChild (!childRe redent variantChild)* !childDe dedent }
 variantChild { describer | equalSpec }
 payloadSpec { ParenOpen nonEnumType (comma nonEnumType)* comma? ParenClose }
-equalSpec { Equal atomicValue }
+VariantEqual { equal }
+equalSpec { VariantEqual atomicValue }
 
 FunctionName { identifier "()" }
 Function { FunctionName functionBody? }
@@ -39,7 +40,7 @@ describer { singleDocumentationLine | multilineDocumentation | property | tags}
 PropertyKey { identifier }
 property { Period PropertyKey Equal value }
 Tag { identifier }
-tags { bracketOpen Tag (comma Tag)* comma? bracketClose }
+tags { BracketOpen Tag (comma Tag)* comma? BracketClose }
 
 exampleSpec { Tilde value }
 typeSpec {  colon Type }
@@ -49,7 +50,7 @@ mapType { TypeCurlyOpen atomicType colon typeInner TypeCurlyClose }
 arrayOfType { TypeBracketOpen !type typeInner TypeBracketClose }
 nonUnionType { atomicType | arrayOfType }
 unionType { nonUnionType (TypePipe nonUnionType)* }
-atomicType { !typeSymbol TypeSymbol | !typeEnumIdent typeEnumShorthand }
+atomicType { (!typeSymbol TypeSymbol (TypeParenOpen atomicValue TypeParenClose)?) | !typeEnumIdent typeEnumShorthand }
 TypeContext { identifier }
 contextualTypeSpec { ParenOpen TypeContext ParenClose typeSpec }
 TypePipe { pipe }
@@ -57,6 +58,8 @@ TypeBracketOpen { bracketOpen }
 TypeBracketClose { bracketClose }
 TypeCurlyOpen { curlyOpen }
 TypeCurlyClose { curlyClose }
+TypeParenOpen { parenOpen }
+TypeParenClose { parenClose }
 
 
 nonEnumType { !typeAtomic TypeSymbol | !typeUnion nonEnumUnionType | !arrayOf nonEnumArrayOfType }
@@ -73,22 +76,20 @@ TypeAliasName { identifier }
 typeAliasBody { indent describer (redent describer)* dedent }
 
 value { complexValue }
-atomicValue { ValueString | Bool | Null | Number | Symbol | Template }
+atomicValue { ValueString | Bool |  Null | Number | !symbol Symbol | Template }
 complexValue {  Array | Object | atomicValue }
 @skip { whitespace } {
-    Object { curlyOpen objectKeyValue (',' objectKeyValue)* ','? curlyClose }
-    Array { bracketOpen complexValue (',' complexValue)* ','? bracketClose }
+    Object { CurlyOpen objectKeyValue (',' objectKeyValue)* ','? CurlyClose }
+    Array { BracketOpen complexValue (',' complexValue)* ','? BracketClose }
 }
 objectKeyValue { (ObjectKeyString | ObjectKeySymbol) ':' complexValue }
 ObjectKeyString { doubleQuoteString }
-ObjectKeySymbol { identifier }
+ObjectKeySymbol { identifier | true | false | null}
 ValueString { doubleQuoteString }
 
 Symbol { identifier }
 Bool { true | false  }
-true { @extend<identifier, "true"> }
-false { @extend<identifier, "false"> }
-Null { @extend<identifier, "null"> }
+Null { null }
 
 TemplateField { identifier }
 templateParameter {AngleOpen TemplateField typeSpec? (Tilde ValueString)? AngleClose }
@@ -105,6 +106,15 @@ singleDocumentationLine { SingleDocumentationCaret DocumentationString }
 
 SingleDocumentationCaret { singleCaret }
 
+Equal { equal }
+BracketOpen { bracketOpen }
+BracketClose { bracketClose }
+CurlyOpen { curlyOpen }
+CurlyClose { curlyClose }
+ParenOpen { parenOpen }
+ParenClose { parenClose }
+
+
 
 @external tokens indentation from "./tokens.js" {
     indent
@@ -119,6 +129,10 @@ AngleClose { singleCaret }
 
 @tokens {
     identifier { $[a-zA-Z] $[a-zA-Z0-9\-_]* }
+    true { "true" }
+    false { "false" }
+    null { "null" }
+    @precedence { true, false, null, identifier }
     spaces { $[ \t] }
     whitespace { $[ \n\r\t] }
     documentationString { ![^\n\r]+ }
@@ -136,14 +150,17 @@ AngleClose { singleCaret }
     DoubleCaret { ">>" }
     AngleOpen { "<" }
     singleCaret { ">" }
-    ParenOpen { "(" }
-    ParenClose { ")" }
+    parenOpen { "(" }
+    parenClose { ")" }
     curlyOpen { "{" }
     curlyClose { "}" }
-    Equal { "=" }
+    DoubleEqual { "==" }
+    equal { "=" }
     RightArrow { "->" }
+    QuestionMark { "?" }
     hex { @digit | $[a-fA-F] }
     Escape { "\\" ($["\\\/bfnrt`<'] | "u" hex hex hex hex hex ) }
+    @precedence { true, false, null, symbol }
     @precedence { documentationString, spaces }
     int  { '0' | $[1-9] @digit* }
     frac { '.' @digit+ }

@@ -17,25 +17,91 @@ import {
   defaultHighlightStyle,
   bracketMatching,
 } from "@codemirror/language";
-import { githubDark } from "@uiw/codemirror-theme-github";
+import { automnDark } from "../src/automnDarkTheme.js";
 import { automn } from "../src/language.js";
 
-const sampleCode = `User
-  name: String
-  email: String
-  role: Admin, Member, Guest
-  tags: [String]
+const sampleCode = `Types
+  union?: int | string
+  array_of: [int]
+  map: {int: string}
+  parameter: varchar(255)
+  enum_shorthand: BLUE, GREEN, ORANGE
+  complex: string | [int | {int: int}] | YES, NO
 
-Post
-  title: String
-  content: String
-  author: User
-  status: Draft, Published, Archived
+Values
+  .object_property = {
+    "string_key": "string_value",
+    true: true,
+    false: false,
+    missing: null,
+    symbol: symbol,
+    integer: 12,
+    fraction: 1.25,
+    negative: -10.25,
+    array: ["string"],
+    path: \`/folder/<field: int ~ "12">/file\`,
+  }
+  .array_property = [1, 2, 3,]
+  field_example ~ "string"
 
-Comment
-  body: String
-  post: Post
-  author: User
+Fields
+  inline_specification?: int 'Instant' ~ 12
+  constant_value: string 'Constant' == "some_value"
+  indented_spefication?
+    : object
+    (js): string
+    'Indented'
+    ~ {
+      "foo": "bar"
+    }
+    [some-tag,another-tag,]
+    .property = "string"
+    > single line doc
+    >>
+      multiline
+      documentation
+
+Model GET \`/user/<user_id>\`
+  .property = "string"
+  [tag, another-tag, third-tag,]
+  > single line doc
+  >>
+    multiline
+    documentation
+  field
+  function()
+    argument: int
+    -> return_field: string
+
+Function()
+  arg: int
+  -> return_field1: string
+  -> return_field2: int
+  .property = "string"
+  [tag, another-ag, third-tag,]
+  > single line doc
+  >>
+    multiline
+    documentation
+
+|Enum: string
+  .property = "string"
+  [tag, another-tag, third-tag,]
+  > single line doc
+  >>
+    multiline
+    documentation
+  BLUE
+  RED = "RED"
+  GREEN
+    = "GREEN"
+    [tag, another-ag, third-tag,]
+    > single line doc
+    >>
+      multiline
+      documentation
+
+:TypeAlias = int | [string]
 `;
 
 const state = EditorState.create({
@@ -54,7 +120,7 @@ const state = EditorState.create({
     crosshairCursor(),
     highlightActiveLine(),
     keymap.of([...defaultKeymap, ...historyKeymap]),
-    githubDark,
+    automnDark,
     automn(),
   ],
 });

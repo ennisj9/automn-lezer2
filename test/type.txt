@@ -58,4 +58,4 @@ root(Model(ModelName, Field(
 
 ==>
 
-root(TypeAlias(TypeAliasName, Equal, Type(TypeSymbol, TypePipe, TypeSymbol)))
+root(TypeAlias(TypeAliasColon, TypeAliasName, Equal, Type(TypeSymbol, TypePipe, TypeSymbol)))

@@ -34,7 +34,7 @@ root(Enum(
     EnumPipe,
     EnumName,
     Type(TypeSymbol),
-    Tag,
+    BracketOpen, Tag, BracketClose,
     Period, PropertyKey, Equal, Number,
     SingleDocumentationCaret, DocumentationString,
     DoubleCaret,
@@ -88,5 +88,5 @@ root(Enum(EnumPipe, EnumName,
 root(Enum(
     EnumPipe,
     EnumName,
-    Variant(VariantName,Equal,ValueString,Tag,Period, PropertyKey, Equal, Number, SingleDocumentationCaret, DocumentationString, DoubleCaret, DocumentationString), Variant(VariantName)
+    Variant(VariantName,Equal,ValueString,BracketOpen, Tag, BracketClose, Period, PropertyKey, Equal, Number, SingleDocumentationCaret, DocumentationString, DoubleCaret, DocumentationString), Variant(VariantName)
 ))
