@@ -87,3 +87,18 @@ root(Model(
     Symbol, Template(Backtick, Backtick),
     Field(FieldName)
 ))
+
+# Model with associated model
+
+SomeModel
+  field
+  /SubModel
+    sub_field
+
+==>
+
+root(Model(
+    ModelName,
+    Field(FieldName),
+    AssociatedModel(Slash, AssociatedModelName, Field(FieldName))
+))

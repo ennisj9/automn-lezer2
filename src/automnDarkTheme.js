@@ -87,7 +87,8 @@ const automnDarkTheme = EditorView.theme(
 
 const automnDarkHighlightStyle = HighlightStyle.define([
   // ModelName, EnumName: className with strong
-  { tag: [t.className], color: "#8BE0FF", fontWeight: "bold" },
+  { tag: [t.className], color: "8cecff" },
+  { tag: [t.strong], fontWeight: "bold" },
 
   // FunctionName: function(variableName)
   { tag: t.function(t.variableName), color: "#9FD7FF" },
@@ -96,13 +97,13 @@ const automnDarkHighlightStyle = HighlightStyle.define([
   { tag: t.variableName, color: "#ffffff" },
 
   // TypeSymbol: typeName
-  { tag: t.typeName, color: "#8be8ff" },
+  { tag: t.typeName, color: "#99ddff" },
 
   // TypeEnumVariant, VariantName: atom
   { tag: t.atom, color: "#bff9d5" },
 
   // TypePipe, TypeBracket*, TypeCurly*: typeOperator
-  { tag: t.typeOperator, color: "#70BDFD" },
+  { tag: t.typeOperator, color: "#70b2fd" },
 
   // Number
   { tag: t.number, color: "#ffa2a3" },

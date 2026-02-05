@@ -19,6 +19,7 @@ import {
 } from "@codemirror/language";
 import { automnDark } from "../src/automnDarkTheme.js";
 import { automn } from "../src/language.js";
+import { tagHighlighter, tags, highlightCode } from "@lezer/highlight";
 
 const sampleCode = `Types
   union?: int | string
@@ -72,6 +73,8 @@ Model GET \`/user/<user_id>\`
   function()
     argument: int
     -> return_field: string
+  /Submodel
+    sub_field: int
 
 Function()
   arg: int
@@ -129,3 +132,109 @@ const view = new EditorView({
   state,
   parent: document.getElementById("editor"),
 });
+
+function escapeHtml(str) {
+  if (typeof str !== "string") {
+    return "";
+  }
+  return str.replace(/[&<>"'`]/g, (match) => {
+    switch (match) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#039;";
+      case "`":
+        return "&#096;";
+      default:
+        return match;
+    }
+  });
+}
+
+const classHighlighter = tagHighlighter([
+  { tag: tags.link, class: "tok-link" },
+  { tag: tags.heading, class: "tok-heading" },
+  { tag: tags.emphasis, class: "tok-emphasis" },
+  { tag: tags.strong, class: "tok-strong" },
+  { tag: tags.keyword, class: "tok-keyword" },
+  { tag: tags.atom, class: "tok-atom" },
+  { tag: tags.bool, class: "tok-bool" },
+  { tag: tags.url, class: "tok-url" },
+  { tag: tags.labelName, class: "tok-labelName" },
+  { tag: tags.inserted, class: "tok-inserted" },
+  { tag: tags.deleted, class: "tok-deleted" },
+  { tag: tags.literal, class: "tok-literal" },
+  { tag: tags.string, class: "tok-string" },
+  { tag: tags.number, class: "tok-number" },
+  {
+    tag: [tags.regexp, tags.escape, tags.special(tags.string)],
+    class: "tok-string2",
+  },
+  { tag: tags.variableName, class: "tok-variableName" },
+  { tag: tags.function(tags.variableName), class: "tok-variableName-function" },
+  { tag: tags.local(tags.variableName), class: "tok-variableName tok-local" },
+  {
+    tag: tags.definition(tags.variableName),
+    class: "tok-variableName tok-definition",
+  },
+  { tag: tags.special(tags.variableName), class: "tok-variableName2" },
+  {
+    tag: tags.definition(tags.propertyName),
+    class: "tok-propertyName tok-definition",
+  },
+  { tag: tags.docString, class: "tok-docString" },
+  { tag: tags.annotation, class: "tok-annotation" },
+  { tag: tags.typeName, class: "tok-typeName" },
+  { tag: tags.namespace, class: "tok-namespace" },
+  { tag: tags.className, class: "tok-className" },
+  { tag: tags.macroName, class: "tok-macroName" },
+  { tag: tags.propertyName, class: "tok-propertyName" },
+  { tag: tags.operator, class: "tok-operator" },
+  { tag: tags.comment, class: "tok-comment" },
+  { tag: tags.meta, class: "tok-meta" },
+  { tag: tags.invalid, class: "tok-invalid" },
+  { tag: tags.punctuation, class: "tok-punctuation" },
+  { tag: tags.attributeName, class: "tok-attributeName" },
+  { tag: tags.tagName, class: "tok-tagName" },
+  { tag: tags.null, class: "tok-null" },
+  { tag: tags.operatorKeyword, class: "tok-operatorKeyword" },
+  { tag: tags.typeOperator, class: "tok-typeOperator" },
+  { tag: tags.squareBracket, class: "tok-squareBracket" },
+  { tag: tags.bracket, class: "tok-bracket" },
+  { tag: tags.paren, class: "tok-paren" },
+  { tag: tags.angleBracket, class: "tok-angleBracket" },
+]);
+
+const renderAutomn = (code) => {
+  let output = "<pre>";
+  const emit = (text, classes) => {
+    const escaped = escapeHtml(text);
+    if (classes) {
+      console.log(classes);
+      let span = `<span class="${classes}">${escaped}</span>`;
+      output += span;
+    } else {
+      output += escaped;
+    }
+  };
+  const emitBreak = () => {
+    output += "\n";
+  };
+  highlightCode(
+    code,
+    automn().language.parser.parse(code),
+    classHighlighter,
+    emit,
+    emitBreak,
+  );
+  output += "</pre>";
+  return output;
+};
+
+document.getElementById("prerendered").innerHTML = preRender(sampleCode);

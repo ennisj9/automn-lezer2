@@ -4,7 +4,7 @@
 
 ==>
 
-root(Enum(EnumPipe, EnumName))
+root(Enum(EnumName))
 
 # Enum with variants
 
@@ -14,7 +14,7 @@ root(Enum(EnumPipe, EnumName))
 
 ==>
 
-root(Enum(EnumPipe, EnumName, Variant(VariantName), Variant(VariantName)))
+root(Enum(EnumName, Variant(VariantName), Variant(VariantName)))
 
 # Enum with describers
 
@@ -31,7 +31,6 @@ root(Enum(EnumPipe, EnumName, Variant(VariantName), Variant(VariantName)))
 ==>
 
 root(Enum(
-    EnumPipe,
     EnumName,
     Type(TypeSymbol),
     BracketOpen, Tag, BracketClose,
@@ -51,7 +50,7 @@ root(Enum(
 
 ==>
 
-root(Enum(EnumPipe, EnumName,
+root(Enum(EnumName,
   Variant(VariantName,ParenOpen,TypeSymbol, TypeSymbol,ParenClose),
   Variant(VariantName)
 ))
@@ -65,10 +64,10 @@ root(Enum(EnumPipe, EnumName,
 
 ==>
 
-root(Enum(EnumPipe, EnumName,
-  Variant(VariantName,Equal,ValueString),
-  Variant(VariantName,Equal,ValueString),
-  Variant(VariantName,Equal,ValueString),
+root(Enum(EnumName,
+  Variant(VariantName,VariantEqual,ValueString),
+  Variant(VariantName,VariantEqual,ValueString),
+  Variant(VariantName,VariantEqual,ValueString),
 ))
 
 # Enum with variant describers
@@ -86,7 +85,6 @@ root(Enum(EnumPipe, EnumName,
 ==>
 
 root(Enum(
-    EnumPipe,
     EnumName,
-    Variant(VariantName,Equal,ValueString,BracketOpen, Tag, BracketClose, Period, PropertyKey, Equal, Number, SingleDocumentationCaret, DocumentationString, DoubleCaret, DocumentationString), Variant(VariantName)
+    Variant(VariantName,VariantEqual,ValueString,BracketOpen, Tag, BracketClose, Period, PropertyKey, Equal, Number, SingleDocumentationCaret, DocumentationString, DoubleCaret, DocumentationString), Variant(VariantName)
 ))

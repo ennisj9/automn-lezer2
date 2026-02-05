@@ -1,15 +1,21 @@
-@precedence { childRe @left, childDe @left, parentRe @left, parentDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left, ident @left, symbol @left }
+@precedence { childRe @left, childDe @left, semiParentRe @left, semiParentDe @left, parentRe @left, parentDe @left, typeEnumIdent @left, typeSymbol @left, typeUnion @left, typeAtomic @left, arrayOf @left, type @left, trueFalseNull @left, objectKeySymbol @left, ident @left, symbol @left }
 
 @top root { entity (redent entity)* }
 
 entity { Model | Enum | TypeAlias | Function }
 
-modelBody {indent modelChild (!parentRe redent (!ident modelChild))* !parentDe dedent }
+modelBody {indent modelChild (!parentRe redent modelChild)* !parentDe dedent }
 ModelName { identifier }
-Model { ModelName ((!symbol atomicValue) | mixin)* modelBody? }
+Model { ModelName LabelString? ((!symbol atomicValue) | mixin )* modelBody? }
 mixin { "&" TypeSymbol }
 
-modelChild { Field | Function | describer }
+modelChild { Field | Function | describer | AssociatedModel }
+
+AssociatedModelName { identifier }
+AssociatedModel { Slash AssociatedModelName LabelString? ((!symbol atomicValue) | mixin )* associatedModelBody? }
+associatedModelBody{ indent associatedModelChild (!semiParentRe redent associatedModelChild)* !semiParentDe dedent }
+associatedModelChild { Field | Function | describer }
+
 
 FieldName { !ident (identifier | true | false| null)  }
 Field { FieldName QuestionMark? typeSpec? LabelString? (exampleSpec | constantSpec)? fieldBody?  }
@@ -154,6 +160,7 @@ AngleClose { singleCaret }
     parenClose { ")" }
     curlyOpen { "{" }
     curlyClose { "}" }
+    Slash { "/" }
     DoubleEqual { "==" }
     equal { "=" }
     RightArrow { "->" }

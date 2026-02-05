@@ -1,0 +1,98 @@
+/* Automn Dark Theme - Prerendered Output Styles */
+
+.tok-className {
+    color: #8be0ff;
+    font-weight: bold;
+}
+
+.tok-variableName-function {
+    color: #9fd7ff;
+}
+
+.tok-variableName {
+    color: #ffffff;
+}
+
+.tok-typeName {
+    color: #8be8ff;
+}
+
+.tok-atom {
+    color: #bff9d5;
+}
+
+.tok-typeOperator {
+    color: #70bdfd;
+}
+
+.tok-number {
+    color: #ffa2a3;
+}
+
+.tok-variableName2 {
+    color: #c5e39c;
+}
+
+.tok-string {
+    color: #efe1c3;
+}
+
+.tok-escape {
+    color: #f5d591;
+}
+
+.tok-string2 {
+    color: #f6b68e;
+}
+
+.tok-annotation {
+    color: #c9b2ff;
+}
+
+.tok-attributeName {
+    color: #ffc3fe;
+}
+
+.tok-tagName {
+    color: #f2d5f1;
+}
+
+.tok-propertyName {
+    color: #db9ccd;
+}
+
+.tok-docString {
+    color: #d1d9ff;
+}
+
+.tok-bool {
+    color: #70adfd;
+}
+
+.tok-null {
+    color: #70adfd;
+}
+
+.tok-operatorKeyword {
+    color: #f3a3f0;
+}
+
+.tok-angleBracket {
+    color: #dadded;
+}
+
+.tok-bracket {
+    color: #dadded;
+}
+
+.tok-paren {
+    color: #dadded;
+}
+
+.tok-squareBracket {
+    color: #dadded;
+}
+
+.tok-operator {
+    color: #b5c0f6;
+}
